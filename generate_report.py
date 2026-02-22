@@ -273,8 +273,9 @@ def build_report():
         f"for {NUM_EPOCHS} epochs with early stopping (patience=10). "
         f"Training completed in {TRAINING_TIME} on Apple Silicon MPS "
         f"with batch size 128. The best validation loss was "
-        f"{BEST_VAL_LOSS} (reconstruction: {RECON_FINAL}, KL divergence: "
-        f"{KL_FINAL}). The non-zero KL term "
+        f"{BEST_VAL_LOSS}, decomposed as validation reconstruction "
+        f"{RECON_FINAL} and validation KL divergence {KL_FINAL}. "
+        "The non-zero KL term "
         "confirms the model avoids posterior collapse and actively uses "
         "the latent space."
     )
