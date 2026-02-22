@@ -44,7 +44,7 @@ FONT_ITALIC = ("Helvetica", "I", 10)
 TOTAL_PARAMS = "384,577"
 LATENT_DIM = "32"
 NUM_EPOCHS = "50"
-TRAINING_TIME = "211.5s (3.5 min)"
+TRAINING_TIME = "210.7s (3.5 min)"
 BEST_VAL_LOSS = "237.74"
 TEST_RMSE = "0.1170"
 KL_FINAL = "16.8"
@@ -273,8 +273,8 @@ def build_report():
         f"for {NUM_EPOCHS} epochs with early stopping (patience=10). "
         f"Training completed in {TRAINING_TIME} on Apple Silicon MPS "
         f"with batch size 128. The final training loss decomposition "
-        f"was: reconstruction {RECON_FINAL}, KL divergence {KL_FINAL} "
-        f"(total {BEST_VAL_LOSS} validation). The non-zero KL term "
+        f"was: reconstruction {RECON_FINAL} and KL divergence {KL_FINAL} "
+        f"(best validation total: {BEST_VAL_LOSS}). The non-zero KL term "
         "confirms the model avoids posterior collapse and actively uses "
         "the latent space."
     )
@@ -524,6 +524,12 @@ def build_report():
         "(e.g., diffusion models, large GANs) can require orders of "
         "magnitude more compute. Responsible AI development should consider "
         "the environmental footprint of model training and deployment."
+    )
+    pdf.italic_text(
+        "Mitigation: Track carbon footprint of training runs, use "
+        "efficient architectures and early stopping to minimize unnecessary "
+        "computation, prefer fine-tuning over training from scratch, and "
+        "document energy consumption in model cards."
     )
 
     pdf.subsection("Positive Applications")
