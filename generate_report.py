@@ -215,6 +215,24 @@ def build_report():
     # =======================================================================
     pdf.section_heading(3, "Model Design and Training Approach")
 
+    pdf.subsection("Why a VAE?")
+    pdf.body_text(
+        "Several generative model families exist -- GANs, VAEs, diffusion "
+        "models, autoregressive models, and normalizing flows. We chose a "
+        "Convolutional VAE for this project because: (1) VAEs provide a "
+        "principled probabilistic framework with a well-defined loss function "
+        "(the evidence lower bound, or ELBO), unlike GANs which require "
+        "delicate adversarial balancing and suffer from mode collapse; "
+        "(2) the learned latent space supports rich downstream analysis -- "
+        "interpolation, dimension traversal, class-conditional generation, "
+        "and t-SNE visualization -- that would be difficult or impossible "
+        "with other architectures; (3) VAEs train stably and reproducibly "
+        "with standard gradient descent, making them ideal for educational "
+        "and experimental settings; and (4) the architecture scales well to "
+        "Fashion-MNIST's 28x28 resolution while training in minutes on "
+        "consumer hardware."
+    )
+
     pdf.subsection("VAE Architecture")
     pdf.body_text(
         "The Convolutional VAE consists of a symmetric encoder-decoder "
@@ -385,11 +403,23 @@ def build_report():
     pdf.body_text(
         "The best-reconstructed images (Figure 9, top rows) tend to be "
         "simple, high-contrast items with uniform shapes (e.g., trousers, "
-        "bags). The worst reconstructions (bottom rows) involve items "
-        "with fine details, unusual poses, or ambiguous category membership. "
-        "Per-class analysis confirms that visually simple, structurally "
-        "consistent classes (Trouser, Bag) achieve lower reconstruction "
-        "error than highly variable classes (Shirt, Coat)."
+        "sneakers), with per-image BCE losses as low as ~90-100. The worst "
+        "reconstructions (bottom rows, BCE losses exceeding 400) involve "
+        "items with fine details, unusual poses, or ambiguous category "
+        "membership."
+    )
+    pdf.body_text(
+        "Per-class average reconstruction loss (BCE, summed over pixels) "
+        "on the test set reveals a nearly 2x spread: Pullover (286.6), "
+        "Shirt (281.9), Bag (273.7), T-shirt/top (258.7), Coat (258.0), "
+        "Ankle boot (207.4), Dress (189.6), Sandal (161.2), Sneaker "
+        "(153.8), Trouser (152.2). Visually simple, structurally consistent "
+        "classes (Trouser, Sneaker) achieve the lowest reconstruction "
+        "error, while highly variable classes with complex internal "
+        "structure (Pullover, Shirt) are the hardest to reconstruct. "
+        "This pattern suggests the VAE allocates latent capacity toward "
+        "capturing broad shape categories rather than fine within-class "
+        "variation."
     )
 
     pdf.add_figure(
@@ -407,11 +437,14 @@ def build_report():
     pdf.body_text(
         "While Fashion-MNIST is a benign academic benchmark, the "
         "generative modeling techniques demonstrated here have broader "
-        "ethical implications when applied to real-world fashion data."
+        "ethical implications when applied to real-world fashion data. "
+        "This section examines specific ethical concerns, how design "
+        "choices in this project relate to each, and concrete mitigations "
+        "for responsible deployment."
     )
 
     pdf.subsection("Cultural Representation Bias")
-    pdf.bullet(
+    pdf.body_text(
         "Fashion-MNIST reflects a narrow, Western-centric view of clothing. "
         "The 10 categories (T-shirt, Trouser, Dress, etc.) map primarily "
         "to Western fashion norms and exclude culturally significant "
@@ -419,11 +452,33 @@ def build_report():
         "traditional clothing forms. A generative model trained on this "
         "data can only produce outputs within this limited cultural scope, "
         "risking the reinforcement of Western fashion as the default or "
-        "norm (Goodfellow et al., 2016)."
+        "norm."
+    )
+    pdf.italic_text(
+        "Mitigation: Future work should train on culturally diverse "
+        "datasets with balanced representation across global fashion "
+        "traditions, and audit generated outputs for cultural coverage gaps."
+    )
+
+    pdf.subsection("Differential Output Quality Across Categories")
+    pdf.body_text(
+        "Our per-class analysis reveals that the model reconstructs some "
+        "categories significantly better than others (Trouser: 152.2 BCE "
+        "vs. Pullover: 286.6 BCE -- a nearly 2x gap). If deployed at "
+        "scale, such differential quality could systematically disadvantage "
+        "certain product categories, creating biased representations in "
+        "e-commerce or design tools. Categories with higher visual "
+        "complexity receive lower-fidelity outputs, which could lead to "
+        "unfair treatment in downstream applications."
+    )
+    pdf.italic_text(
+        "Mitigation: Audit per-class generation quality before deployment "
+        "and consider class-weighted loss functions or specialized "
+        "sub-models for underperforming categories."
     )
 
     pdf.subsection("Counterfeit and Misuse Potential")
-    pdf.bullet(
+    pdf.body_text(
         "More capable generative models trained on higher-resolution "
         "fashion data could be misused to produce counterfeit product "
         "images for fraudulent marketing, fake e-commerce listings, or "
@@ -431,9 +486,22 @@ def build_report():
         "the barrier to creating convincing fake product imagery decreases, "
         "raising concerns about consumer deception and brand integrity."
     )
+    pdf.body_text(
+        "Design choices in this project inherently limit misuse risk: "
+        "the 28x28 grayscale resolution, inherent VAE blurriness, and "
+        "beta=1.0 (which prioritizes latent regularity over pixel-perfect "
+        "reconstruction) all ensure that outputs cannot pass as real "
+        "product photography. However, the techniques demonstrated here "
+        "are directly transferable to higher-resolution settings."
+    )
+    pdf.italic_text(
+        "Mitigation: Watermark generated images, restrict access to "
+        "high-resolution models, and implement provenance tracking for "
+        "AI-generated content."
+    )
 
     pdf.subsection("Creative Ownership")
-    pdf.bullet(
+    pdf.body_text(
         "The question of who owns AI-generated fashion designs remains "
         "legally and ethically unresolved. If a VAE trained on existing "
         "designs produces novel outputs, are those outputs derivative "
@@ -441,16 +509,34 @@ def build_report():
         "concerns as generative models are increasingly used in the "
         "fashion industry for design ideation and rapid prototyping."
     )
+    pdf.italic_text(
+        "Mitigation: Clearly document training data provenance, disclose "
+        "AI involvement in design pipelines, and establish licensing "
+        "frameworks for AI-assisted creative outputs."
+    )
 
     pdf.subsection("Environmental Cost")
-    pdf.bullet(
+    pdf.body_text(
         "Training generative models, particularly at scale, requires "
         "significant computational resources and associated energy "
-        "consumption. While the model in this project is small and trains "
-        "in under 4 minutes, production-scale generative models (e.g., "
-        "diffusion models, large GANs) can require orders of magnitude "
-        "more compute. Responsible AI development should consider the "
-        "environmental footprint of model training and deployment."
+        "consumption. While the model in this project is small (384,577 "
+        "parameters, 3.5 min training), production-scale generative models "
+        "(e.g., diffusion models, large GANs) can require orders of "
+        "magnitude more compute. Responsible AI development should consider "
+        "the environmental footprint of model training and deployment."
+    )
+
+    pdf.subsection("Positive Applications")
+    pdf.body_text(
+        "Generative models like VAEs also enable responsible innovation: "
+        "rapid prototyping for sustainable fashion design (reducing "
+        "physical sample waste), accessibility tools for visually impaired "
+        "designers, personalized virtual try-on experiences, and "
+        "educational tools for understanding visual similarity and style. "
+        "The latent space structure demonstrated in this project -- smooth "
+        "interpolation, class prototypes, dimension traversal -- provides "
+        "interpretable, controllable generation that supports human "
+        "creativity rather than replacing it."
     )
 
     # =======================================================================
