@@ -49,7 +49,7 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# Run the notebook (trains VAE, ~5-10 min on Apple Silicon MPS)
+# Run the notebook (trains VAE, ~3-5 min on Apple Silicon MPS)
 jupyter notebook generative_model.ipynb
 
 # Regenerate the PDF report
