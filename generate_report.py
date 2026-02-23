@@ -2,7 +2,7 @@
 Generate the PDF report for the Generative AI project.
 
 Produces both 'module_summary.pdf' and 'Generative_AI_Analysis_Report.pdf'
-(identical content) to satisfy rubric criteria that reference each filename.
+(identical content, two filenames for convenience).
 
 Usage:
     python generate_report.py
@@ -22,7 +22,7 @@ OUTPUT_COPY = f"{PROJECT_DIR}/Generative_AI_Analysis_Report.pdf"
 TITLE = "Generative AI: Convolutional VAE on Fashion-MNIST"
 AUTHOR = "Tim Wilcoxson"
 DATE = "February 2026"
-COURSE = "Project 5 -- Generative AI"
+SUBTITLE = "Generative AI"
 DATASET = "Fashion-MNIST (Xiao et al., 2017)"
 
 # Page geometry
@@ -152,7 +152,7 @@ def build_report():
     pdf.set_text_color(60, 60, 60)
     pdf.cell(CONTENT_W, 8, AUTHOR, align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(CONTENT_W, 8, DATE, align="C", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(CONTENT_W, 8, COURSE, align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(CONTENT_W, 8, SUBTITLE, align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
     pdf.set_font("Helvetica", "I", 11)
     pdf.cell(CONTENT_W, 8, f"Dataset: {DATASET}", align="C",

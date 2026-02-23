@@ -5,7 +5,7 @@ A generative modeling experiment using a Convolutional Variational Autoencoder (
 | | |
 |---|---|
 | **Author** | Tim Wilcoxson |
-| **Course** | Project 5 — Generative AI |
+| **Focus** | Generative AI |
 | **Date** | February 2026 |
 
 ## Key Findings
@@ -43,7 +43,7 @@ project5_generative_ai/
 ## Setup and Reproduction
 
 ```bash
-git clone https://github.com/trwilcoxson/udacity-nd608-project5-generative-ai.git
+git clone https://github.com/trwilcoxson/conv-vae-fashion-mnist.git
 cd project5_generative_ai
 python -m venv venv
 source venv/bin/activate
